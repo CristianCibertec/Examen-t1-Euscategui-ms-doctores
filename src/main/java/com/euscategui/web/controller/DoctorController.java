@@ -5,6 +5,8 @@ import com.euscategui.web.dto.DoctorRequestDto;
 import com.euscategui.web.dto.DoctorResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +22,13 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.findAll());
     }
 
+    @GetMapping("/by-cliente")
+    public ResponseEntity<List<DoctorResponseDto>> getDoctoresByCliente(@AuthenticationPrincipal Jwt jwt) {
+        String clientId = jwt.getClaimAsString("clienteId"); // o jwt.getSubject()
+        System.out.println("Cliente autenticado: " + clientId);
+        return ResponseEntity.ok(doctorService.findAll());
 
+    }
     @GetMapping("/{id}")
     public ResponseEntity<DoctorResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.findById(id));
